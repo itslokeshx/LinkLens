@@ -1,4 +1,3 @@
-
 import os
 
 from dotenv import load_dotenv
@@ -9,15 +8,17 @@ from langchain_groq import ChatGroq
 
 load_dotenv()
 
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
 llm = ChatGroq(
     model="openai/gpt-oss-20b",
-    api_key=os.getenv("GROQ_API_KEY")
+    api_key=GROQ_API_KEY
 )
 
+url = input("Enter URL: ")
+
 loader = UnstructuredURLLoader(
-    urls=[
-        "https://python.langchain.com/docs/introduction/"
-    ]
+    urls=[url]
 )
 
 documents = loader.load()
@@ -27,7 +28,7 @@ prompt = PromptTemplate(
     template="""
 You are an expert summarizer.
 
-Summarize the following content in concise bullet points.
+Summarize the following content in clear and concise bullet points.
 
 {text}
 """
@@ -39,10 +40,11 @@ chain = load_summarize_chain(
     prompt=prompt
 )
 
-response = chain.invoke(
+summary = chain.invoke(
     {
         "input_documents": documents
     }
 )
 
-print(response["output_text"])
+print("\nSummary\n")
+print(summary["output_text"])
