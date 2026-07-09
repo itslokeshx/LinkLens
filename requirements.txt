@@ -1,1 +1,7 @@
-
+langchain
+langchain-community
+langchain-groq
+python-dotenv
+unstructured
+lxml
+beautifulsoup4
