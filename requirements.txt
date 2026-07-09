@@ -1,7 +1,11 @@
+streamlit
 langchain
 langchain-community
 langchain-groq
 python-dotenv
 unstructured
-lxml
+unstructured[html]
 beautifulsoup4
+lxml
+html5lib
+requests
