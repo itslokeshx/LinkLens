@@ -2,8 +2,8 @@ import os
 
 import streamlit as st
 from dotenv import load_dotenv
-from langchain.chains.summarize import load_summarize_chain
-from langchain.prompts import PromptTemplate
+from langchain_classic.chains.summarize import load_summarize_chain
+from langchain_core.prompts import PromptTemplate
 from langchain_community.document_loaders import UnstructuredURLLoader
 from langchain_groq import ChatGroq
 
