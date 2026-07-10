@@ -1,18 +1,15 @@
 # 🔗 LinkLens
 
-> AI-powered webpage summarization from a single URL.
-
-LinkLens is a lightweight web application that extracts the main content from a webpage and generates a concise AI summary. Simply paste a URL, and LinkLens handles the reading and summarization for you.
+A minimal, clean webpage and YouTube transcript summarization tool powered by LangChain and Groq.
 
 ---
 
 ## ✨ Features
 
-- 🌐 Summarize any publicly accessible webpage
-- 🤖 AI-powered summaries using Groq
-- ⚡ Simple and responsive Streamlit interface
-- 📄 Clean and easy-to-read output
-- 🔒 API key managed securely through environment variables
+- 🌐 **Webpages & YouTube**: Summarize standard articles/webpages or load YouTube transcripts directly.
+- 🧠 **Verbose Thinking**: View the AI's reasoning step-by-step in an expandable container.
+- 🎨 **Minimal UI**: Clean, monochromatic layout that adapts natively to both dark and light modes.
+- ⚡ **Streamlit Interface**: Lightweight, side-by-side control interface.
 
 ---
 
@@ -20,10 +17,10 @@ LinkLens is a lightweight web application that extracts the main content from a 
 
 - Python
 - Streamlit
-- LangChain
-- Groq
-- Unstructured
-- BeautifulSoup
+- LangChain / LangChain Classic / LangChain Core
+- Groq (ChatGroq API)
+- Unstructured (Web document loader)
+- YouTube Transcript API (Video transcript loader)
 
 ---
 
@@ -36,24 +33,18 @@ git clone https://github.com/itslokeshx/LinkLens.git
 cd LinkLens
 ```
 
+### Setup environment
+
+Create a `.env` file:
+
+```env
+GROQ_API_KEY=your_groq_api_key_here
+```
+
 ### Install dependencies
 
 ```bash
 pip install -r requirements.txt
-```
-
-### Configure environment variables
-
-Create a `.env` file from the example.
-
-```bash
-cp .env.example .env
-```
-
-Add your Groq API key.
-
-```env
-GROQ_API_KEY=your_groq_api_key
 ```
 
 ### Run the application
@@ -67,22 +58,25 @@ streamlit run app.py
 ## 💡 How It Works
 
 ```text
-URL
- │
- ▼
-UnstructuredURLLoader
- │
- ▼
-Extract Webpage Content
- │
- ▼
-Prompt Template
- │
- ▼
-Groq LLM
- │
- ▼
-AI Summary
+               Input URL
+                   │
+         ┌─────────┴─────────┐
+         ▼                   ▼
+  [ YouTube URL? ]    [ Standard URL? ]
+         │                   │
+         ▼                   ▼
+   YoutubeLoader    UnstructuredLoader
+         │                   │
+         └─────────┬─────────┘
+                   ▼
+         Load Document Text
+                   │
+         ┌─────────┴─────────┐
+         ▼                   ▼
+  Extract Thinking    Generate Summary
+         │                   │
+         ▼                   ▼
+   st.expander          st.markdown
 ```
 
 ---
@@ -91,17 +85,11 @@ AI Summary
 
 ```text
 LinkLens/
-├── app.py
-├── requirements.txt
-├── .env.example
-└── README.md
+├── app.py              # Application entry point and layout
+├── requirements.txt    # Declared dependencies
+├── .env.example        # Environment template file
+└── README.md           # Documentation
 ```
-
----
-
-## 📸 Preview
-
-Coming soon.
 
 ---
 
