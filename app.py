@@ -26,11 +26,14 @@ st.markdown(
         background-color: transparent !important;
         color: inherit !important;
         border: 1px solid rgba(128, 128, 128, 0.3) !important;
-        padding: 0.5rem 1.25rem !important;
+        padding: 0.55rem 1.25rem !important;
         border-radius: 6px !important;
         font-weight: 500 !important;
         font-size: 0.95rem !important;
         transition: all 0.2s ease !important;
+        height: 42px !important;
+        width: 100% !important;
+        line-height: 1.2 !important;
     }
     
     div.stButton > button:hover {
@@ -44,11 +47,12 @@ st.markdown(
     
     div.stTextInput > div > div > input {
         border-radius: 6px !important;
-        padding: 0.6rem 0.85rem !important;
+        padding: 0.55rem 0.85rem !important;
         border: 1px solid rgba(128, 128, 128, 0.2) !important;
         background-color: transparent !important;
         transition: all 0.2s ease !important;
         font-size: 0.95rem !important;
+        height: 42px !important;
     }
     
     div.stTextInput > div > div > input:focus {
@@ -62,8 +66,10 @@ st.markdown(
     
     div[data-testid="stExpander"] {
         border-radius: 6px !important;
-        border: 1px solid rgba(128, 128, 128, 0.2) !important;
+        border: 1px solid rgba(128, 128, 128, 0.15) !important;
         background-color: transparent !important;
+        box-shadow: none !important;
+        margin-top: 1rem !important;
     }
     </style>
     """,
@@ -72,11 +78,11 @@ st.markdown(
 
 st.markdown(
     """
-    <div style="padding: 1.5rem 0 1rem 0;">
-        <h1 style="font-size: 2rem; font-weight: 600; margin-bottom: 0.25rem; letter-spacing: -0.5px;">
+    <div style="padding: 1rem 0 1.5rem 0;">
+        <h1 style="font-size: 1.75rem; font-weight: 600; margin-bottom: 0.15rem; letter-spacing: -0.3px;">
             LinkLens
         </h1>
-        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 1.5rem;">
+        <p style="color: #64748b; font-size: 0.9rem; margin: 0;">
             A minimal tool to summarize web pages.
         </p>
     </div>
@@ -90,16 +96,20 @@ if not groq_api_key:
     st.error("GROQ_API_KEY not found in .env")
     st.stop()
 
-url = st.text_input(
-    label="Website URL",
-    placeholder="Enter URL to summarize...",
-    label_visibility="collapsed"
-)
+col1, col2 = st.columns([4, 1])
 
-summarize = st.button(
-    "Summarize",
-    use_container_width=True
-)
+with col1:
+    url = st.text_input(
+        label="Website URL",
+        placeholder="Enter URL to summarize...",
+        label_visibility="collapsed"
+    )
+
+with col2:
+    summarize = st.button(
+        "Summarize",
+        use_container_width=True
+    )
 
 if summarize:
     if not url:
@@ -149,18 +159,12 @@ Then, write a clean, structured summary using concise bullet points. Organize th
                 summary = re.sub(r"<thinking>.*?</thinking>", "", output_text, flags=re.DOTALL).strip()
             
             if thinking:
+                st.write("")
                 with st.expander("Thinking Process", expanded=False):
                     st.markdown(thinking)
             
-            summary_html = f"""
-            <div style="border-top: 1px solid rgba(128, 128, 128, 0.2); margin-top: 1.5rem; padding-top: 1.5rem;">
-                <h3 style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.75rem;">Summary</h3>
-                <div style="font-size: 0.95rem; line-height: 1.6; color: inherit;">
-                    {summary}
-                </div>
-            </div>
-            """
-            st.markdown(summary_html, unsafe_allow_html=True)
+            st.write("")
+            st.markdown(summary)
             
         except Exception as e:
             st.error(str(e))
