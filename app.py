@@ -1,4 +1,5 @@
 import os
+import re
 import streamlit as st
 from dotenv import load_dotenv
 from langchain_classic.chains.summarize import load_summarize_chain
@@ -58,6 +59,12 @@ st.markdown(
     div[data-testid="stNotification"] {
         border-radius: 6px !important;
     }
+    
+    div[data-testid="stExpander"] {
+        border-radius: 6px !important;
+        border: 1px solid rgba(128, 128, 128, 0.2) !important;
+        background-color: transparent !important;
+    }
     </style>
     """,
     unsafe_allow_html=True
@@ -114,7 +121,9 @@ if summarize:
                 template="""
 You are an expert summarizer.
 
-Summarize the following content in concise bullet points.
+Analyze the text and organize your thoughts. First, write your analysis of the document structure, key themes, and main takeaways inside <thinking>...</thinking> XML tags.
+
+Then, write a clean, structured summary using concise bullet points. Organize the bullet points under clear, bold section headers where appropriate.
 
 {text}
 """
@@ -130,11 +139,24 @@ Summarize the following content in concise bullet points.
                 }
             )
             
+            output_text = response.get("output_text", "")
+            thinking = ""
+            summary = output_text
+            
+            thinking_match = re.search(r"<thinking>(.*?)</thinking>", output_text, re.DOTALL)
+            if thinking_match:
+                thinking = thinking_match.group(1).strip()
+                summary = re.sub(r"<thinking>.*?</thinking>", "", output_text, flags=re.DOTALL).strip()
+            
+            if thinking:
+                with st.expander("Thinking Process", expanded=False):
+                    st.markdown(thinking)
+            
             summary_html = f"""
-            <div style="border-top: 1px solid rgba(128, 128, 128, 0.2); margin-top: 2rem; padding-top: 1.5rem;">
+            <div style="border-top: 1px solid rgba(128, 128, 128, 0.2); margin-top: 1.5rem; padding-top: 1.5rem;">
                 <h3 style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.75rem;">Summary</h3>
                 <div style="font-size: 0.95rem; line-height: 1.6; color: inherit;">
-                    {response["output_text"]}
+                    {summary}
                 </div>
             </div>
             """
