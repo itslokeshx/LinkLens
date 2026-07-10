@@ -4,7 +4,7 @@ import streamlit as st
 from dotenv import load_dotenv
 from langchain_classic.chains.summarize import load_summarize_chain
 from langchain_core.prompts import PromptTemplate
-from langchain_community.document_loaders import UnstructuredURLLoader
+from langchain_community.document_loaders import UnstructuredURLLoader, YoutubeLoader
 from langchain_groq import ChatGroq
 
 load_dotenv()
@@ -118,9 +118,15 @@ if summarize:
 
     with st.spinner("Processing..."):
         try:
-            loader = UnstructuredURLLoader(
-                urls=[url]
-            )
+            if "youtube.com" in url or "youtu.be" in url:
+                loader = YoutubeLoader.from_youtube_url(
+                    url,
+                    add_video_info=False
+                )
+            else:
+                loader = UnstructuredURLLoader(
+                    urls=[url]
+                )
             documents = loader.load()
             llm = ChatGroq(
                 model="openai/gpt-oss-20b",
